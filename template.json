@@ -1,0 +1,19 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-ovf",
+      "source_path": "magento2.ubuntu.ovf",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "shutdown_command": "echo 'vagrant' | sudo -S shutdown -P now"
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "vagrant",
+        "keep_input_artifact": false
+      }
+    ]
+  ]
+}
