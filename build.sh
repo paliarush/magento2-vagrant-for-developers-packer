@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
+# Enable trace printing and exit on the first error
+set -ex
+
 vagrant up
-VBoxManage export magento2.vagrant.packer -o magento2.vagrant.packer.ova --ovf20
-vagrant destroy
+vagrant halt
+VBoxManage export -o "magento2.ubuntu-14.04.ova" --ovf20 "magento2.ubuntu-14.04"
+vagrant destroy -f
 packer build template.json
