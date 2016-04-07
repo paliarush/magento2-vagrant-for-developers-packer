@@ -66,3 +66,6 @@ apt-get install -y rabbitmq-server
 rabbitmq-plugins enable rabbitmq_management
 invoke-rc.d rabbitmq-server stop
 invoke-rc.d rabbitmq-server start
+
+# Install Varnish
+apt-get install -y varnish
