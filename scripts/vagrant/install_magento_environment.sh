@@ -13,6 +13,8 @@ apt-get install -y git
 # Setup Apache
 apt-get install -y apache2
 a2enmod rewrite
+a2dismod mpm_event
+a2enmod mpm_prefork
 # Make sure Apache is run from 'vagrant' user to avoid permission issues
 sed -i 's|www-data|vagrant|g' /etc/apache2/envvars
 
@@ -21,7 +23,13 @@ sed -i 's|www-data|vagrant|g' /etc/apache2/envvars
 apt-get install -y language-pack-en-base
 LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
 apt-get update
-apt-get install -y php7.0 php7.0-mcrypt php7.0-curl php7.0-cli php7.0-mysql php7.0-gd php7.0-intl php7.0-xsl
+
+# TODO: Install PHP 5.6 and disable it by default
+
+# Install PHP 7.0 and enable it by default
+apt-get install -y php7.0 php7.0-mcrypt php7.0-curl php7.0-cli php7.0-mysql php7.0-gd php7.0-intl php7.0-xsl php7.0-bcmath php7.0-mbstring php7.0-soap php7.0-zip libapache2-mod-php7.0
+a2enmod php7.0
+
 # Install XDebug
 apt-get install -y php7.0-dev
 cd /usr/lib
