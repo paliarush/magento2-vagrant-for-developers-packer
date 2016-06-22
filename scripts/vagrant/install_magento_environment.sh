@@ -19,12 +19,20 @@ a2enmod mpm_prefork
 sed -i 's|www-data|vagrant|g' /etc/apache2/envvars
 
 # Setup PHP
-# Workaround until php7.0 is available in official ubuntu repository
 apt-get install -y language-pack-en-base
 LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
 apt-get update
 
-# TODO: Install PHP 5.6 and disable it by default
+# Install PHP 5.6
+sudo apt-get install -y php5.6 php-xdebug php5.6-xml php5.6-mcrypt php5.6-curl php5.6-cli php5.6-mysql php5.6-gd php5.6-intl php5.6-bcmath php5.6-mbstring php5.6-soap php5.6-zip libapache2-mod-php5.6
+echo '
+xdebug.max_nesting_level=200
+xdebug.remote_enable=1
+xdebug.remote_host=192.168.10.1
+xdebug.idekey=phpstorm' >> /etc/php/5.6/mods-available/xdebug.ini
+a2dismod php5.6
+rm -rf /etc/php/5.6/apache2
+ln -s /etc/php/5.6/cli /etc/php/5.6/apache2
 
 # Install PHP 7.0 and enable it by default
 apt-get install -y php7.0 php7.0-mcrypt php7.0-curl php7.0-cli php7.0-mysql php7.0-gd php7.0-intl php7.0-xsl php7.0-bcmath php7.0-mbstring php7.0-soap php7.0-zip libapache2-mod-php7.0
@@ -44,10 +52,13 @@ touch /etc/php/7.0/cli/conf.d/20-xdebug.ini
 echo 'zend_extension=/usr/lib/xdebug/modules/xdebug.so
 xdebug.max_nesting_level=200
 xdebug.remote_enable=1
-xdebug.remote_connect_back=1' >> /etc/php/7.0/cli/conf.d/20-xdebug.ini
+xdebug.remote_host=192.168.10.1
+xdebug.idekey=phpstorm' >> /etc/php/7.0/cli/conf.d/20-xdebug.ini
 echo "date.timezone = America/Chicago" >> /etc/php/7.0/cli/php.ini
 rm -rf /etc/php/7.0/apache2
 ln -s /etc/php/7.0/cli /etc/php/7.0/apache2
+
+update-alternatives --set php /usr/bin/php7.0
 
 # Restart Apache
 service apache2 restart
@@ -77,3 +88,9 @@ invoke-rc.d rabbitmq-server start
 
 # Install Varnish
 apt-get install -y varnish
+
+# Install ElasticSearch
+apt-get install -y openjdk-7-jre
+wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.2.deb
+dpkg -i elasticsearch-1.7.2.deb
+update-rc.d elasticsearch defaults
